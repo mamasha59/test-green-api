@@ -9,7 +9,7 @@ const ChatBlock = () => {
 
   const {idInstanceContext,tokenContext, telContext} = useUserContext() // получаем idInstanceContext, id и telphone  из контекста
 
-  const handleSubmitText = useCallback(async (e) => { // отправка сообщения юзеру
+  const handleSubmitText = async (e) => { // отправка сообщения юзеру
     e.preventDefault();
     try {
       const send = await fetch(`https://api.green-api.com/waInstance${idInstanceContext}/sendMessage/${tokenContext}`, {
@@ -31,7 +31,7 @@ const ChatBlock = () => {
     } catch (error) {
         alert('произошла ошибка:', error)
     }
-  },[idInstanceContext,tokenContext,telContext])
+  }
 
   useEffect(()=>{
     const handleTakeMessages = async() => {
@@ -40,7 +40,7 @@ const ChatBlock = () => {
         const webhookBody = await response.json(); // делаем данные ввиде json
         console.log(webhookBody);
           if(webhookBody.body.typeWebhook === 'incomingMessageReceived'){
-            const message = webhookBody.body.messageData.textMessageData.textMessage; // почему то иногда вместо extendedTextMessageData.text идет другой конец
+            const message = webhookBody.body.messageData.textMessageData.textMessage; // почему то иногда extendedTextMessageData.text
             setIncomeMessage(prev => [...prev, {message: message, status:'incomingMessageReceived'}]); // добавляем взодящее сообщение в массив
             console.log(message);
             console.log('ты тут');
