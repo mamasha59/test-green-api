@@ -5,4 +5,12 @@
 Создать Аккаунт  
 Авторизовать Аккаунт  
 Получить параметры доступа к Аккаунту  
-### https://green-api.com/docs/before-start/#parameters
+### https://green-api.com/docs/before-start/#parameters  
+  
+      
+#### Готовый проект - https://test-green-api.vercel.app/  
+
+можно улучшить:  
+использовать Socket IO  
+инерфейс  
+пофиксить дублирование(не хватило времени)

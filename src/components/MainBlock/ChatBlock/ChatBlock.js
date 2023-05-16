@@ -1,5 +1,5 @@
 import { useUserContext } from "@/context/user";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ChatBlock = () => {
   const text = useRef(''); // берем значение инпута через реф
@@ -33,17 +33,15 @@ const ChatBlock = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => { // проверяем входящие сообщения
     const handleTakeMessages = async() => {
       try {
         const response = await fetch(`https://api.green-api.com/waInstance${idInstanceContext}/receiveNotification/${tokenContext}`,{method: 'GET'});
         const webhookBody = await response.json(); // делаем данные ввиде json
-        console.log(webhookBody);
+
           if(webhookBody.body.typeWebhook === 'incomingMessageReceived'){
             const message = webhookBody.body.messageData.textMessageData.textMessage; // почему то иногда extendedTextMessageData.text
             setIncomeMessage(prev => [...prev, {message: message, status:'incomingMessageReceived'}]); // добавляем взодящее сообщение в массив
-            console.log(message);
-            console.log('ты тут');
             await fetch(`https://api.green-api.com/waInstance${idInstanceContext}/deleteNotification/${tokenContext}/${webhookBody.receiptId}`,{method: 'DELETE'});
 
           } else if (webhookBody.body.typeWebhook === 'stateInstanceChanged') {
@@ -63,10 +61,10 @@ const ChatBlock = () => {
         console.log(error);
       }
   }
-    handleTakeMessages();
-    console.log(incomeMessage);
+  handleTakeMessages();
   const interval = setInterval(handleTakeMessages, 3000);
   return () => clearInterval(interval);
+  
   },[idInstanceContext,incomeMessage,tokenContext])
 
   const scrollToBottom = () => { // прокрутка скрола вниз при новом сообщении
@@ -89,10 +87,10 @@ const ChatBlock = () => {
           <div ref={containerRef} className="flex flex-col justify-between no-scrollbar w-full items-end overflow-y-scroll gap-2">
 
             <div className="w-auto self-start gap-2 flex flex-col">
-                {incomeMessage.map((e,index)=><p className={"px-2 py-1 w-auto flex bg-white"} key={index}>{e.message}</p>)}
+                {incomeMessage.map((e,index)=><p className="px-2 py-1 flex bg-white w-fit" key={index}>{e.message}</p>)}
             </div>
-            <div className="w-auto self-end gap-2 flex flex-col">
-                {messages.map((e,index)=> <p className={"bg-[#dcf8c6] px-2 py-1 w-auto flex"} key={index}>{e.message}</p>)}
+            <div className="w-auto self-end gap-2 flex flex-col items-end">
+                {messages.map((e,index)=> <p className="bg-[#dcf8c6] px-2 py-1 flex w-fit" key={index}>{e.message}</p>)}
             </div>
 
           </div>
